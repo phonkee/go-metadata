@@ -126,10 +126,15 @@ func (a *action) GetData() (result map[string]interface{}) {
 	} else {
 		result = map[string]interface{}{}
 	}
+	// no need to have this information
+	delete(result, "label")
+	delete(result, "description")
+	delete(result, "required")
 
 	if a.description != "" {
 		result["description"] = a.description
 	}
+
 
 	return
 }
