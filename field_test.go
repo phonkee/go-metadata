@@ -81,7 +81,7 @@ func TestField(t *testing.T) {
 		label := "lllabel"
 		description := "dddesc"
 
-		f := newField().Label(label).Description(description)
+		f := newStructField().Label(label).Description(description)
 
 		data := f.GetData()
 
@@ -100,6 +100,15 @@ func TestField(t *testing.T) {
 		data = f.GetData()
 
 		So(data["choices"], ShouldHaveSameTypeAs, newChoices())
+
+		nf := newField().From([]string{})
+		So(nf.GetData()["value"], ShouldNotBeNil)
+
+
+		nf = newField().From(map[string]string{})
+		So(nf.GetData()["key"], ShouldNotBeNil)
+		So(nf.GetData()["value"], ShouldNotBeNil)
+
 
 	})
 
@@ -138,12 +147,18 @@ func TestField(t *testing.T) {
 
 		type TestStruct struct {
 			First string `json:"first"`
+			Second *string `json:"second"`
+			Third *struct {
+	        } `json:"third"`
 		}
 
 		f.From(TestStruct{})
 
 		So(f.HasField("first"), ShouldBeTrue)
 		So(f.IsRequired(), ShouldBeTrue)
+
+		So(f.Field("second").IsRequired(), ShouldBeFalse)
+		So(f.Field("third").IsRequired(), ShouldBeFalse)
 
 		f.From(&TestStruct{})
 		So(f.HasField("first"), ShouldBeTrue)

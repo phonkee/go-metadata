@@ -39,7 +39,7 @@ type Action interface {
 /*
 NewAction creates fresh new action
 */
-func NewAction() Action {
+func newAction() Action {
 	return &action{}
 }
 

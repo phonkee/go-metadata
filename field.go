@@ -246,7 +246,7 @@ func (f *field) From(target interface{}) Field {
 		}
 	}
 
-	nf := GetField(typ)
+	nf := getField(typ)
 	*f = *(nf.(*field))
 
 	// if pointer was provided set required to false
@@ -264,8 +264,19 @@ func (f *field) GetData() (result map[string]interface{}) {
 		"type":     f.typ,
 	}
 
+	// if we have fields, add fields data
 	if len(f.fields) > 0 {
-		result["fields"] = f.fields
+
+		// if typ is struct add fields under "fields"
+		if f.typ == FIELD_STRUCT {
+			result["fields"] = f.fields
+
+		// if typ is array or map merge fields to result
+		} else if f.typ == FIELD_ARRAY || f.typ == FIELD_MAP {
+			for k, v := range f.fields {
+				result[k] = v
+			}
+		}
 	}
 
 	if f.label != "" {

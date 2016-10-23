@@ -1,6 +1,6 @@
 /*
 @TODO: add more documentation to this code, since it is more advanced code and can bring misunderstandnis.
- */
+*/
 package metadata
 
 import (
@@ -66,7 +66,7 @@ func RegisterType(f FieldTypeFunc, values ...interface{}) (err error) {
 }
 
 // returns field by kind
-func GetFieldByKind(typ reflect.Type) (field Field) {
+func getFieldByKind(typ reflect.Type) (field Field) {
 
 	typn := typ
 	if typn.Kind() == reflect.Ptr {
@@ -82,7 +82,7 @@ func GetFieldByKind(typ reflect.Type) (field Field) {
 }
 
 // returns field by value
-func GetField(typ reflect.Type) Field {
+func getField(typ reflect.Type) Field {
 
 	orig := typ
 
@@ -102,7 +102,7 @@ func GetField(typ reflect.Type) Field {
 		return fn(orig)
 	}
 
-	return GetFieldByKind(orig).Required(required)
+	return getFieldByKind(orig).Required(required)
 }
 
 // default ftf imlpementation
@@ -118,12 +118,20 @@ func ftf(fieldtype string) FieldTypeFunc {
 
 // field type function for struct
 func ftfStruct(typ reflect.Type) (result Field) {
-	result = newField().Type(FIELD_STRUCT)
+	result = newStructField()
 
-	if typ.Kind() == reflect.Ptr {
-		result.Required(false)
-		typ = typ.Elem()
+	required := true
+
+	for {
+		if typ.Kind() == reflect.Ptr {
+			required = false
+			typ = typ.Elem()
+		} else {
+			break
+		}
 	}
+
+	result.Required(required)
 
 	for i := 0; i < typ.NumField(); i++ {
 		ft := typ.Field(i)
@@ -137,7 +145,7 @@ func ftfStruct(typ reflect.Type) (result Field) {
 		}
 
 		// what to do with this??
-		result.AddField(name, GetField(ft.Type))
+		result.AddField(name, getField(ft.Type))
 	}
 
 	return
@@ -145,11 +153,11 @@ func ftfStruct(typ reflect.Type) (result Field) {
 
 // array type
 func ftfArray(typ reflect.Type) (result Field) {
-	return newField().Type(FIELD_ARRAY).AddField("value", GetField(typ.Elem()))
+	return newField().Type(FIELD_ARRAY).AddField("value", getField(typ.Elem()))
 }
 
 // map type
 func ftfMap(typ reflect.Type) (result Field) {
-	return newField().Type(FIELD_MAP).AddField("key", GetField(typ.Key())).AddField("value", GetField(typ.Elem()))
+	return newField().Type(FIELD_MAP).AddField("key", getField(typ.Key())).AddField("value", getField(typ.Elem()))
 	return
 }

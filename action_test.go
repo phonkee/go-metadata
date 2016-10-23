@@ -9,13 +9,13 @@ import (
 func TestAction(t *testing.T) {
 
 	Convey("Test Default Action", t, func() {
-		a := NewAction()
+		a := newAction()
 		_ = a
 
 	})
 
 	Convey("Test Description", t, func() {
-		a := NewAction()
+		a := newAction()
 
 		So(a.GetDescription(), ShouldEqual, "")
 		description := "fieldname"
@@ -24,7 +24,7 @@ func TestAction(t *testing.T) {
 	})
 
 	Convey("Test New Field", t, func() {
-		a := NewAction()
+		a := newAction()
 
 		name := "fieldname"
 
@@ -43,7 +43,7 @@ func TestAction(t *testing.T) {
 	})
 
 	Convey("Test Get Field Names", t, func() {
-		a := NewAction()
+		a := newAction()
 		name := "fieldname"
 
 		So(len(a.GetFieldNames()), ShouldEqual, 0)
@@ -53,7 +53,7 @@ func TestAction(t *testing.T) {
 	})
 
 	Convey("Test Action From", t, func() {
-		a := NewAction()
+		a := newAction()
 
 		So(func() {
 			a.From("")
@@ -62,20 +62,25 @@ func TestAction(t *testing.T) {
 		type TestStruct struct {
 			A string `json:"a"`
 			B string `json:"b"`
+			C string `json:"-"`
 		}
 
 		a.From(TestStruct{})
 
 		So(a.HasField("a"), ShouldBeTrue)
+		So(a.HasField("b"), ShouldBeTrue)
+		So(a.HasField("c"), ShouldBeFalse)
 
 		a.From(&TestStruct{})
 
 		So(a.HasField("a"), ShouldBeTrue)
+		So(a.HasField("b"), ShouldBeTrue)
+		So(a.HasField("c"), ShouldBeFalse)
 
 	})
 
 	Convey("Test Has Field", t, func() {
-		a := NewAction()
+		a := newAction()
 
 		So(func() {
 			a.HasField()
@@ -88,7 +93,7 @@ func TestAction(t *testing.T) {
 	})
 
 	Convey("Test GetData", t, func() {
-		a := NewAction()
+		a := newAction()
 
 		So(a.GetData()["type"], ShouldBeNil)
 

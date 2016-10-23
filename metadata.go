@@ -72,7 +72,7 @@ func (m *metadata) Action(method string) Action {
 
 	// check if action exists
 	if _, ok := m.actions[method]; !ok {
-		m.actions[method] = NewAction()
+		m.actions[method] = newAction()
 	}
 
 	return m.actions[method]

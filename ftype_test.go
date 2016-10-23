@@ -12,7 +12,7 @@ func TestFType(t *testing.T) {
 
 	Convey("Test Simple", t, func() {
 
-		f := GetField(reflect.TypeOf(int(0)))
+		f := getField(reflect.TypeOf(int(0)))
 		So(f.GetType(), ShouldEqual, FIELD_INTEGER)
 
 	})
