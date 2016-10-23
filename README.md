@@ -1,6 +1,7 @@
 # Metadata
 
 Metadata can inspect types and return JSON response for OPTIONS requests.
+All api is chainable, but warning it changes data inplace.
 
 
 Example:
