@@ -12,6 +12,9 @@ type Metadata interface {
 	// action returns either existing or newly created action
 	Action(method string) Action
 
+	// RemoveAction removes action
+	RemoveAction(method string) Metadata
+
 	// Name sets name to metadata
 	Name(string) Metadata
 
@@ -24,36 +27,26 @@ type Metadata interface {
 	// GetDescription returns description
 	GetDescription() string
 
-	// ActionCreate is alias to create "POST" action
-	ActionCreate() Action
-
-	// ActionUpdate is alias to create "POST" action
-	ActionUpdate() Action
-
-	// ActionRetrieve is alias to create "GET" action
-	ActionRetrieve() Action
-
-	// ActionDelete is alias to create "DELETE" action
-	ActionDelete() Action
-
 	// GetData returns dynamic data (for json etc..)
 	GetData() map[string]interface{}
 
 	// MarshalJSON satisfies json marshaller
 	MarshalJSON() ([]byte, error)
-
-	// @TODO: implement RemoveAction method
-	// RemoveAction(method string) Metadata
-
 }
 
 /*
 New returns new metadata instance
 */
-func New() Metadata {
-	return &metadata{
+func New(label ...string) (result Metadata) {
+	result = &metadata{
 		actions: map[string]Action{},
 	}
+
+	if len(label) > 0 {
+		result.Name(label[0])
+	}
+
+	return
 }
 
 /*
@@ -61,10 +54,10 @@ Metadata interface implementation
 */
 type metadata struct {
 	// map to actions
-	actions     map[string]Action
+	actions map[string]Action
 
 	// name of metadata
-	name        string
+	name string
 
 	// description of metadata
 	description string
@@ -86,31 +79,11 @@ func (m *metadata) Action(method string) Action {
 }
 
 /*
-ActionCreate is alias to create "POST" action
+RemoveAction removes action from metadata
 */
-func (m *metadata) ActionCreate() Action {
-	return m.Action(ACTION_CREATE)
-}
-
-/*
-ActionUpdate is alias to create "POST" action
-*/
-func (m *metadata) ActionUpdate() Action {
-	return m.Action(ACTION_UPDATE)
-}
-
-/*
-ActionRetrieve is alias to create "GET" action
-*/
-func (m *metadata) ActionRetrieve() Action {
-	return m.Action(ACTION_RETRIEVE)
-}
-
-/*
-ActionDelete is alias to create "DELETE" action
-*/
-func (m *metadata) ActionDelete() Action {
-	return m.Action(ACTION_DELETE)
+func (m *metadata) RemoveAction(method string) Metadata {
+	delete(m.actions, cleanMethod(method))
+	return m
 }
 
 /*
