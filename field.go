@@ -19,8 +19,8 @@ type Field interface {
 	// returns whether Field has field with given name
 	HasField(...string) bool
 
-	// Fields return mapping
-	GetFields() map[string]Field
+	// GetFieldNames returns list of fields
+	GetFieldNames() []string
 
 	// Description sets help text for given field
 	Description(string) Field
@@ -153,8 +153,13 @@ func (f *field) HasField(names ...string) bool {
 /*
 Fields returns mapping of fields
 */
-func (f *field) GetFields() map[string]Field {
-	return f.fields
+func (f *field) GetFieldNames() (result []string) {
+	result = make([]string, 0, len(f.fields))
+	for key, _ := range f.fields {
+		result = append(result, key)
+	}
+
+	return
 }
 
 /*

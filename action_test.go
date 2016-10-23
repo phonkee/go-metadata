@@ -33,17 +33,31 @@ func TestAction(t *testing.T) {
 		a.Field(name)
 		So(a.HasField(name), ShouldBeTrue)
 
-		So(func() { a.Field() }, ShouldPanic)
+		So(func() {
+			a.Field()
+		}, ShouldPanic)
 
 		result := a.Field("response", "user")
 		So(a.Field("response").Field("user"), ShouldEqual, result)
 
 	})
 
+	Convey("Test Get Field Names", t, func() {
+		a := NewAction()
+		name := "fieldname"
+
+		So(len(a.GetFieldNames()), ShouldEqual, 0)
+		a.Field(name)
+		So(len(a.GetFieldNames()), ShouldEqual, 1)
+
+	})
+
 	Convey("Test Action From", t, func() {
 		a := NewAction()
 
-		So(func() { a.From("") }, ShouldPanic)
+		So(func() {
+			a.From("")
+		}, ShouldPanic)
 
 		type TestStruct struct {
 			A string `json:"a"`
@@ -63,7 +77,9 @@ func TestAction(t *testing.T) {
 	Convey("Test Has Field", t, func() {
 		a := NewAction()
 
-		So(func() { a.HasField() }, ShouldPanic)
+		So(func() {
+			a.HasField()
+		}, ShouldPanic)
 
 		a.Field("response").Field("user")
 

@@ -62,18 +62,18 @@ func TestField(t *testing.T) {
 	Convey("Test Fields", t, func() {
 		f := newField()
 
-		So(len(f.GetFields()), ShouldEqual, 0)
+		So(len(f.GetFieldNames()), ShouldEqual, 0)
 
 		name := "some field"
 		f.Field(name)
 
-		So(len(f.GetFields()), ShouldEqual, 1)
+		So(len(f.GetFieldNames()), ShouldEqual, 1)
 
 		f.Field(name)
-		So(len(f.GetFields()), ShouldEqual, 1)
+		So(len(f.GetFieldNames()), ShouldEqual, 1)
 
 		f.RemoveField(name)
-		So(len(f.GetFields()), ShouldEqual, 0)
+		So(len(f.GetFieldNames()), ShouldEqual, 0)
 	})
 
 	Convey("Test GetData", t, func() {

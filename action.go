@@ -23,6 +23,9 @@ type Action interface {
 	// HasField returns whether field is set
 	HasField(names ...string) bool
 
+	// GetFieldNames returns names of all fields
+	GetFieldNames() []string
+
 	// From inspects given value and makes appropriate steps
 	From(v interface{}) Action
 
@@ -96,6 +99,18 @@ func (a *action) HasField(names ...string) bool {
 }
 
 /*
+GetFieldNames returns names of all fields
+*/
+func (a *action) GetFieldNames() []string {
+
+	if a.field == nil {
+		return []string{}
+	}
+
+	return a.field.GetFieldNames()
+}
+
+/*
 Read target structure and add fields
 */
 func (a *action) From(target interface{}) Action {
@@ -134,7 +149,6 @@ func (a *action) GetData() (result map[string]interface{}) {
 	if a.description != "" {
 		result["description"] = a.description
 	}
-
 
 	return
 }
