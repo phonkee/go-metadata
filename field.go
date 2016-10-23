@@ -65,11 +65,18 @@ type Field interface {
 /*
 NewField returns fresh Field instance
 */
-func NewField() Field {
+func newField() Field {
 	return &field{
 		fields:  map[string]Field{},
 		choices: newChoices(),
 	}
+}
+
+/*
+newStructField returns fresh struct field instance
+*/
+func newStructField() Field {
+	return newField().Type(FIELD_STRUCT)
 }
 
 /*
@@ -113,12 +120,12 @@ func (f *field) Field(names ...string) Field {
 	}
 
 	if _, ok := f.fields[names[0]]; !ok {
-		f.fields[names[0]] = NewField()
+		f.fields[names[0]] = newStructField()
 	}
 
 	if len(names) > 1 {
 		rest := names[1:]
-		return f.fields[names[0]].Type(FIELD_STRUCT).Field(rest...)
+		return f.fields[names[0]].Field(rest...)
 	}
 
 	return f.fields[names[0]]

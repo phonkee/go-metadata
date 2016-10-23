@@ -10,8 +10,17 @@ func TestAction(t *testing.T) {
 
 	Convey("Test Default Action", t, func() {
 		a := NewAction()
+		_ = a
 
-		So(len(a.GetFields()), ShouldEqual, 0)
+	})
+
+	Convey("Test Description", t, func() {
+		a := NewAction()
+
+		So(a.GetDescription(), ShouldEqual, "")
+		description := "fieldname"
+		So(a.Description(description).GetDescription(), ShouldEqual, description)
+
 	})
 
 	Convey("Test New Field", t, func() {
@@ -31,30 +40,10 @@ func TestAction(t *testing.T) {
 
 	})
 
-	Convey("Test Has Field", t, func() {
-		a := NewAction()
-
-		So(func() { a.HasField() }, ShouldPanic)
-
-		a.Field("response").Field("user")
-
-		So(a.HasField("response", "user"), ShouldBeTrue)
-
-	})
-
-	Convey("Test Description", t, func() {
-		a := NewAction()
-
-		So(a.GetDescription(), ShouldEqual, "")
-		description := "fieldname"
-		So(a.Description(description).GetDescription(), ShouldEqual, description)
-
-	})
-
 	Convey("Test Action From", t, func() {
 		a := NewAction()
 
-		So(func() { a.From([]string{}) }, ShouldPanic)
+		So(func() { a.From("") }, ShouldPanic)
 
 		type TestStruct struct {
 			A string `json:"a"`
@@ -71,16 +60,30 @@ func TestAction(t *testing.T) {
 
 	})
 
+	Convey("Test Has Field", t, func() {
+		a := NewAction()
+
+		So(func() { a.HasField() }, ShouldPanic)
+
+		a.Field("response").Field("user")
+
+		So(a.HasField("response", "user"), ShouldBeTrue)
+
+	})
+
 	Convey("Test GetData", t, func() {
 		a := NewAction()
 
-		So(a.GetData(), ShouldNotBeNil)
+		So(a.GetData()["type"], ShouldBeNil)
 
 		name := "fieldname"
 		a.Field(name)
 
-		So(len(a.GetData()), ShouldEqual, 1)
+		So(a.GetData()["type"], ShouldNotBeNil)
+		So(a.GetData()["description"], ShouldBeNil)
 
+		description := "desccrippp"
+		a.Description(description).GetData()
 	})
 
 }

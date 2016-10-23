@@ -23,9 +23,6 @@ type Action interface {
 	// HasField returns whether field is set
 	HasField(names ...string) bool
 
-	// GetFields return all fields
-	GetFields() map[string]Field
-
 	// From inspects given value and makes appropriate steps
 	From(v interface{}) Action
 
@@ -40,9 +37,7 @@ type Action interface {
 NewAction creates fresh new action
 */
 func NewAction() Action {
-	return &action{
-		fields: map[string]Field{},
-	}
+	return &action{}
 }
 
 /*
@@ -53,8 +48,8 @@ type action struct {
 	// description of action
 	description string
 
-	// store fields
-	fields map[string]Field
+	// field
+	field Field
 }
 
 /*
@@ -76,46 +71,28 @@ func (a *action) GetDescription() string {
 Field adds or retrieves field
 */
 func (a *action) Field(names ...string) Field {
-	if len(names) == 0 {
-		panic("please provide top level field")
+
+	if a.field == nil {
+		a.field = newStructField()
 	}
 
-	if _, ok := a.fields[names[0]]; !ok {
-		a.fields[names[0]] = NewField()
-	}
-
-	if len(names) > 1 {
-		rest := names[1:]
-		return a.fields[names[0]].Type(FIELD_STRUCT).Field(rest...)
-	}
-
-	return a.fields[names[0]]
+	return a.field.Field(names...)
 }
 
 /*
 HasField returns whether field is set
 */
-func (a *action) HasField(names ...string) (ok bool) {
+func (a *action) HasField(names ...string) bool {
+
 	if len(names) == 0 {
 		panic("please provide top level field")
 	}
 
-	field, ok := a.fields[names[0]]
-
-	if len(names) > 1 {
-		if ok {
-			remaining := names[1:]
-			return field.HasField(remaining...)
-		}
+	if a.field == nil {
+		return false
 	}
-	return ok
-}
 
-/*
-GetFields returns field mappings
-*/
-func (a *action) GetFields() map[string]Field {
-	return a.fields
+	return a.field.HasField(names...)
 }
 
 /*
@@ -130,18 +107,12 @@ func (a *action) From(target interface{}) Action {
 			break
 		}
 	}
-	if typ.Kind() != reflect.Struct {
-		panic("Metadata.Action.From supports only structs")
+
+	if !(typ.Kind() == reflect.Struct || typ.Kind() == reflect.Array || typ.Kind() == reflect.Slice) {
+		panic("Metadata.Action.From supports only structs/array/slice")
 	}
 
-	// clear fields
-	a.fields = map[string]Field{}
-
-	f := NewField().From(target)
-	for name, field := range f.GetFields() {
-		a.fields[name] = field
-	}
-
+	a.field = newField().From(target)
 	return a
 }
 
@@ -149,10 +120,15 @@ func (a *action) From(target interface{}) Action {
 GetData returns data for json marshalling etc..
 */
 func (a *action) GetData() (result map[string]interface{}) {
-	result = map[string]interface{}{}
 
-	if len(a.fields) > 0 {
-		result["fields"] = a.fields
+	if a.field != nil {
+		result = a.field.GetData()
+	} else {
+		result = map[string]interface{}{}
+	}
+
+	if a.description != "" {
+		result["description"] = a.description
 	}
 
 	return

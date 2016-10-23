@@ -9,31 +9,31 @@ import (
 func TestField(t *testing.T) {
 
 	Convey("Test Default Field", t, func() {
-		f := NewField()
+		f := newField()
 		So(f, ShouldNotBeNil)
 	})
 
 	Convey("Test Label", t, func() {
 		label := "testlabel"
-		f := NewField().Label(label)
+		f := newField().Label(label)
 		So(f.GetLabel(), ShouldEqual, label)
 	})
 
 	Convey("Test Description", t, func() {
 		descrption := "testht"
-		f := NewField().Description(descrption)
+		f := newField().Description(descrption)
 		So(f.GetDescription(), ShouldEqual, descrption)
 	})
 
 	Convey("Test Add Field", t, func() {
-		f := NewField()
+		f := newField()
 		name := "testfield"
 		sub := f.Field(name)
 		sub2 := f.Field(name)
 		So(sub, ShouldEqual, sub2)
 
 		other := "other"
-		otherfield := NewField()
+		otherfield := newField()
 		f.AddField(other, otherfield)
 
 		So(f.Field(other), ShouldEqual, otherfield)
@@ -46,7 +46,7 @@ func TestField(t *testing.T) {
 	})
 
 	Convey("Test Has Field", t, func() {
-		f := NewField()
+		f := newField()
 		name := "testfield"
 
 		So(func() { f.HasField() }, ShouldPanic)
@@ -60,7 +60,7 @@ func TestField(t *testing.T) {
 	})
 
 	Convey("Test Fields", t, func() {
-		f := NewField()
+		f := newField()
 
 		So(len(f.GetFields()), ShouldEqual, 0)
 
@@ -81,7 +81,7 @@ func TestField(t *testing.T) {
 		label := "lllabel"
 		description := "dddesc"
 
-		f := NewField().Label(label).Description(description)
+		f := newField().Label(label).Description(description)
 
 		data := f.GetData()
 
@@ -104,7 +104,7 @@ func TestField(t *testing.T) {
 	})
 
 	Convey("Test RemoveField", t, func() {
-		f := NewField()
+		f := newField()
 		name := "testfield"
 		So(f.HasField(name), ShouldBeFalse)
 		f.Field(name)
@@ -114,7 +114,7 @@ func TestField(t *testing.T) {
 	})
 
 	Convey("Test Required", t, func() {
-		f := NewField()
+		f := newField()
 		So(f.IsRequired(), ShouldBeFalse)
 
 		f.Required(true)
@@ -122,7 +122,7 @@ func TestField(t *testing.T) {
 	})
 
 	Convey("Test Type", t, func() {
-		f := NewField()
+		f := newField()
 		So(f.GetType(), ShouldEqual, "")
 
 		typ := "sometype"
@@ -134,7 +134,7 @@ func TestField(t *testing.T) {
 	})
 
 	Convey("Test Field.From", t, func() {
-		f := NewField()
+		f := newField()
 
 		type TestStruct struct {
 			First string `json:"first"`
@@ -152,13 +152,13 @@ func TestField(t *testing.T) {
 	})
 
 	Convey("Test MarshalJSON", t, func() {
-		f := NewField()
+		f := newField()
 		_, err := f.MarshalJSON()
 		So(err, ShouldBeNil)
 	})
 
 	Convey("Test Choices", t, func() {
-		f := NewField()
+		f := newField()
 		So(f.Choices(), ShouldHaveSameTypeAs, newChoices())
 	})
 }

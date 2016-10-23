@@ -78,7 +78,7 @@ func GetFieldByKind(typ reflect.Type) (field Field) {
 	}
 
 	// if something is not implemented
-	return NewField().Type(FIELD_INVALID)
+	return newField().Type(FIELD_INVALID)
 }
 
 // returns field by value
@@ -108,7 +108,7 @@ func GetField(typ reflect.Type) Field {
 // default ftf imlpementation
 func ftf(fieldtype string) FieldTypeFunc {
 	return func(typ reflect.Type) (result Field) {
-		result = NewField().Type(fieldtype)
+		result = newField().Type(fieldtype)
 		if typ.Kind() == reflect.Ptr {
 			result.Required(false)
 		}
@@ -118,7 +118,7 @@ func ftf(fieldtype string) FieldTypeFunc {
 
 // field type function for struct
 func ftfStruct(typ reflect.Type) (result Field) {
-	result = NewField().Type(FIELD_STRUCT)
+	result = newField().Type(FIELD_STRUCT)
 
 	if typ.Kind() == reflect.Ptr {
 		result.Required(false)
@@ -145,11 +145,11 @@ func ftfStruct(typ reflect.Type) (result Field) {
 
 // array type
 func ftfArray(typ reflect.Type) (result Field) {
-	return NewField().Type(FIELD_ARRAY).AddField("value", GetField(typ.Elem()))
+	return newField().Type(FIELD_ARRAY).AddField("value", GetField(typ.Elem()))
 }
 
 // map type
 func ftfMap(typ reflect.Type) (result Field) {
-	return NewField().Type(FIELD_MAP).AddField("key", GetField(typ.Key())).AddField("value", GetField(typ.Elem()))
+	return newField().Type(FIELD_MAP).AddField("key", GetField(typ.Key())).AddField("value", GetField(typ.Elem()))
 	return
 }
