@@ -1,3 +1,6 @@
+/*
+@TODO: add more documentation to this code, since it is more advanced code and can bring misunderstandnis.
+ */
 package metadata
 
 import (
