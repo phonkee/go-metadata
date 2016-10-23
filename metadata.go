@@ -32,6 +32,12 @@ type Metadata interface {
 
 	// MarshalJSON satisfies json marshaller
 	MarshalJSON() ([]byte, error)
+
+	// Debug enables debugging for metadata
+	Debug() Metadata
+
+	// isDebug returns whether debugging is enabled
+	isDebug() bool
 }
 
 /*
@@ -61,6 +67,9 @@ type metadata struct {
 
 	// description of metadata
 	description string
+
+	// debug enabled
+	debug bool
 }
 
 /*
@@ -72,7 +81,14 @@ func (m *metadata) Action(method string) Action {
 
 	// check if action exists
 	if _, ok := m.actions[method]; !ok {
-		m.actions[method] = newAction()
+		na := newAction()
+
+		// if debug is enabled, action must too
+		if m.isDebug() {
+			na.Debug()
+		}
+
+		m.actions[method] = na
 	}
 
 	return m.actions[method]
@@ -143,4 +159,19 @@ MarshalJSON returns json representation of metadata
 func (m *metadata) MarshalJSON() (result []byte, err error) {
 	result, err = json.Marshal(m.GetData())
 	return
+}
+
+/*
+Debug enables debugging
+*/
+func (m *metadata) Debug() Metadata {
+	m.debug = true
+	return m
+}
+
+/*
+isDebug returns whether debugging is enabled
+*/
+func (m *metadata) isDebug() bool {
+	return m.debug
 }

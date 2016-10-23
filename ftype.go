@@ -145,7 +145,7 @@ func ftfStruct(typ reflect.Type) (result Field) {
 		}
 
 		// what to do with this??
-		result.AddField(name, getField(ft.Type))
+		result.addField(name, getField(ft.Type))
 	}
 
 	return
@@ -153,11 +153,11 @@ func ftfStruct(typ reflect.Type) (result Field) {
 
 // array type
 func ftfArray(typ reflect.Type) (result Field) {
-	return newField().Type(FIELD_ARRAY).AddField("value", getField(typ.Elem()))
+	return newField().Type(FIELD_ARRAY).addField("value", getField(typ.Elem()))
 }
 
 // map type
 func ftfMap(typ reflect.Type) (result Field) {
-	return newField().Type(FIELD_MAP).AddField("key", getField(typ.Key())).AddField("value", getField(typ.Elem()))
+	return newField().Type(FIELD_MAP).addField("key", getField(typ.Key())).addField("value", getField(typ.Elem()))
 	return
 }

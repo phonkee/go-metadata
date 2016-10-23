@@ -11,6 +11,9 @@ func TestField(t *testing.T) {
 	Convey("Test Default Field", t, func() {
 		f := newField()
 		So(f, ShouldNotBeNil)
+
+		So(f.isDebug(), ShouldBeFalse)
+		So(f.Debug().isDebug(), ShouldBeTrue)
 	})
 
 	Convey("Test Label", t, func() {
@@ -34,7 +37,7 @@ func TestField(t *testing.T) {
 
 		other := "other"
 		otherfield := newField()
-		f.AddField(other, otherfield)
+		f.addField(other, otherfield)
 
 		So(f.Field(other), ShouldEqual, otherfield)
 
@@ -104,11 +107,9 @@ func TestField(t *testing.T) {
 		nf := newField().From([]string{})
 		So(nf.GetData()["value"], ShouldNotBeNil)
 
-
 		nf = newField().From(map[string]string{})
 		So(nf.GetData()["key"], ShouldNotBeNil)
 		So(nf.GetData()["value"], ShouldNotBeNil)
-
 
 	})
 
@@ -146,10 +147,10 @@ func TestField(t *testing.T) {
 		f := newField()
 
 		type TestStruct struct {
-			First string `json:"first"`
+			First  string  `json:"first"`
 			Second *string `json:"second"`
-			Third *struct {
-	        } `json:"third"`
+			Third  *struct {
+			} `json:"third"`
 		}
 
 		f.From(TestStruct{})

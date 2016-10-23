@@ -11,6 +11,11 @@ func TestMetadata(t *testing.T) {
 	Convey("Test Default Metadata", t, func() {
 		md := New()
 		So(len(md.(*metadata).actions), ShouldEqual, 0)
+
+		// check debug
+		So(md.isDebug(), ShouldBeFalse)
+		So(md.Debug().isDebug(), ShouldBeTrue)
+
 	})
 
 	Convey("Test Add Action", t, func() {
@@ -24,6 +29,12 @@ func TestMetadata(t *testing.T) {
 		So(len(md.(*metadata).actions), ShouldEqual, 1)
 
 		So(action, ShouldEqual, action2)
+
+		// test with debug
+		md = New().Debug()
+		action = md.Action("GET")
+		So(action.isDebug(), ShouldBeTrue)
+
 	})
 
 	Convey("Test Remove Action", t, func() {

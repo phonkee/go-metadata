@@ -10,8 +10,9 @@ func TestAction(t *testing.T) {
 
 	Convey("Test Default Action", t, func() {
 		a := newAction()
-		_ = a
 
+		So(a.isDebug(), ShouldBeFalse)
+		So(a.Debug().isDebug(), ShouldBeTrue)
 	})
 
 	Convey("Test Description", t, func() {
@@ -100,7 +101,7 @@ func TestAction(t *testing.T) {
 		name := "fieldname"
 		a.Field(name)
 
-		So(a.GetData()["type"], ShouldNotBeNil)
+		So(a.GetData()["body"], ShouldNotBeNil)
 		So(a.GetData()["description"], ShouldBeNil)
 
 		description := "desccrippp"

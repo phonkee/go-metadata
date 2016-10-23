@@ -11,7 +11,7 @@ Field interface
 */
 type Field interface {
 	// adds field
-	AddField(string, Field) (self Field)
+	addField(string, Field) (self Field)
 
 	// Field method returns field by names (recursively)
 	Field(...string) Field
@@ -60,6 +60,12 @@ type Field interface {
 
 	// Choices returns choices
 	Choices() Choices
+
+	// Debug enables debugging for metadata
+	Debug() Field
+
+	// isDebug returns whether debugging is enabled
+	isDebug() bool
 }
 
 /*
@@ -101,12 +107,18 @@ type field struct {
 
 	// choices
 	choices Choices
+
+	// debug
+	debug bool
 }
 
 /*
 AddField adds sub field
 */
-func (f *field) AddField(name string, field Field) Field {
+func (f *field) addField(name string, field Field) Field {
+	if f.isDebug() {
+		field.Debug()
+	}
 	f.fields[name] = field
 	return f
 }
@@ -120,7 +132,7 @@ func (f *field) Field(names ...string) Field {
 	}
 
 	if _, ok := f.fields[names[0]]; !ok {
-		f.fields[names[0]] = newStructField()
+		f.addField(names[0], newStructField())
 	}
 
 	if len(names) > 1 {
@@ -246,11 +258,16 @@ func (f *field) From(target interface{}) Field {
 		}
 	}
 
+	debug := f.isDebug()
+
 	nf := getField(typ)
 	*f = *(nf.(*field))
 
 	// if pointer was provided set required to false
 	f.Required(required)
+	if debug {
+		f.Debug()
+	}
 
 	return f
 }
@@ -271,7 +288,7 @@ func (f *field) GetData() (result map[string]interface{}) {
 		if f.typ == FIELD_STRUCT {
 			result["fields"] = f.fields
 
-		// if typ is array or map merge fields to result
+			// if typ is array or map merge fields to result
 		} else if f.typ == FIELD_ARRAY || f.typ == FIELD_MAP {
 			for k, v := range f.fields {
 				result[k] = v
@@ -307,4 +324,19 @@ Choices returns choices
 */
 func (f *field) Choices() Choices {
 	return f.choices
+}
+
+/*
+Debug enables debugging
+*/
+func (f *field) Debug() Field {
+	f.debug = true
+	return f
+}
+
+/*
+isDebug returns whether debugging is enabled
+*/
+func (f *field) isDebug() bool {
+	return f.debug
 }

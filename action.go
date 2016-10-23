@@ -34,6 +34,12 @@ type Action interface {
 
 	// MarshalJSON satisfies json marshaller
 	MarshalJSON() ([]byte, error)
+
+	// Debug enables debugging
+	Debug() Action
+
+	// isDebug returns whether debugging is enabled
+	isDebug() bool
 }
 
 /*
@@ -53,6 +59,12 @@ type action struct {
 
 	// field
 	field Field
+
+	// debug
+	debug bool
+
+	// url data as Field
+	url Field
 }
 
 /*
@@ -136,16 +148,18 @@ GetData returns data for json marshalling etc..
 */
 func (a *action) GetData() (result map[string]interface{}) {
 
-	if a.field != nil {
-		result = a.field.GetData()
-	} else {
-		result = map[string]interface{}{}
-	}
-	// no need to have this information
-	delete(result, "label")
-	delete(result, "description")
-	delete(result, "required")
+	result = map[string]interface{}{}
 
+	if a.field != nil {
+		data := a.field.GetData()
+
+		// no need to have this information
+		delete(data, "label")
+		delete(data, "description")
+		delete(data, "required")
+
+		result["body"] = data
+	}
 	if a.description != "" {
 		result["description"] = a.description
 	}
@@ -159,4 +173,19 @@ MarshalJSON returns json representation of metadata
 func (a *action) MarshalJSON() (result []byte, err error) {
 	result, err = json.Marshal(a.GetData())
 	return
+}
+
+/*
+Debug enables debugging
+*/
+func (a *action) Debug() Action {
+	a.debug = true
+	return a
+}
+
+/*
+isDebug returns whether debugging is enabled
+*/
+func (a *action) isDebug() bool {
+	return a.debug
 }
