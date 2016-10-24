@@ -126,6 +126,9 @@ func TestField(t *testing.T) {
 		So(nf.GetData()["key"], ShouldNotBeNil)
 		So(nf.GetData()["value"], ShouldNotBeNil)
 
+		f.Source("/something")
+		So(f.GetData()["source"], ShouldNotBeNil)
+
 	})
 
 	Convey("Test RemoveField", t, func() {
@@ -192,4 +195,11 @@ func TestField(t *testing.T) {
 		f := newField()
 		So(f.Choices(), ShouldHaveSameTypeAs, newChoices())
 	})
+
+	Convey("Test Source", t, func() {
+		So(newField().Source("/suggest"), ShouldHaveSameTypeAs, newSource("/suggest"))
+		So(newField().Source("/suggest").GetData(), ShouldNotBeNil)
+
+	})
+
 }

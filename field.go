@@ -64,6 +64,9 @@ type Field interface {
 	// Choices returns choices
 	Choices() Choices
 
+	// Source
+	Source(path string) Source
+
 	// Debug enables debugging for metadata
 	Debug() Field
 
@@ -78,6 +81,7 @@ func newField() Field {
 	return &field{
 		fields:  map[string]Field{},
 		choices: newChoices(),
+		source:  newSource(),
 	}
 }
 
@@ -110,6 +114,9 @@ type field struct {
 
 	// choices
 	choices Choices
+
+	// source support
+	source Source
 
 	// debug
 	debug bool
@@ -311,20 +318,27 @@ func (f *field) GetData() (result map[string]interface{}) {
 
 			// remove required, we don't need it in array value
 			delete(result, "required")
-
 		}
 	}
 
+	// add label to result if defined
 	if f.label != "" {
 		result["label"] = f.label
 	}
 
+	// add description if available
 	if f.description != "" {
 		result["description"] = f.description
 	}
 
+	// add choices to result
 	if f.choices.Count() > 0 {
 		result["choices"] = f.choices
+	}
+
+	// add source if setup properly
+	if f.source.IsValid() {
+		result["source"] = f.source
 	}
 
 	return
@@ -343,6 +357,13 @@ Choices returns choices
 */
 func (f *field) Choices() Choices {
 	return f.choices
+}
+
+/*
+Source returns source
+*/
+func (f *field) Source(path string) Source {
+	return f.source.Path(path)
 }
 
 /*
