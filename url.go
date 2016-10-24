@@ -29,10 +29,6 @@ func ParseQuery(query string, action Action) (err error) {
 
 	for k := range values {
 		ft := strings.TrimSpace(values.Get(k))
-		if ft == "" {
-			loggerError(action.isDebug(), "Bad type in query for key %v", k)
-			continue
-		}
 
 		if !stringListContains(AVAILABLE_FIELDS, ft) {
 			loggerWarning(action.isDebug(), "Type not found %v, using it anyway", ft)

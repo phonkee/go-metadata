@@ -108,4 +108,29 @@ func TestAction(t *testing.T) {
 		a.Description(description).GetData()
 	})
 
+	Convey("Test Parse Query Params", t, func() {
+		a := newAction()
+
+		a.ParseQueryParam("q=string&page=integer")
+		So(len(a.GetQueryParamNames()), ShouldEqual, 2)
+		So(a.GetData()["query"], ShouldNotBeNil)
+
+		a = newAction()
+		a.ParseQueryParam("%")
+		So(len(a.GetQueryParamNames()), ShouldEqual, 0)
+
+	})
+
+	Convey("Test Remove Query Param", t, func() {
+		a := newAction()
+
+		a.ParseQueryParam("q=string&page=integer")
+		So(len(a.GetQueryParamNames()), ShouldEqual, 2)
+
+		a.RemoveQueryParam("q")
+		So(len(a.GetQueryParamNames()), ShouldEqual, 1)
+
+
+	})
+
 }

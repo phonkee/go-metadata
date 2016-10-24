@@ -82,6 +82,7 @@ func getFieldByKind(typ reflect.Type) (field Field) {
 	}
 
 	// if something is not implemented
+	// @TODO: shouldn't we panic here?
 	return newField().Type(FIELD_INVALID)
 }
 

@@ -47,6 +47,9 @@ type Action interface {
 	// QueryParam returns or adds new query param
 	QueryParam(name string) Field
 
+	// RemoveQueryParam removes query param
+	RemoveQueryParam(name string) Action
+
 	// GetQueryParamNames returns names of all available query params
 	GetQueryParamNames() []string
 }
@@ -230,6 +233,14 @@ QueryParam returns or adds new query param
 */
 func (a *action) QueryParam(name string) Field {
 	return a.query.Field(name)
+}
+
+/*
+RemoveQueryParam removes query param by name
+ */
+func (a *action) RemoveQueryParam(name string) Action {
+	a.query.RemoveField(name)
+	return a
 }
 
 /*
