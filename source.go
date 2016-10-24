@@ -18,7 +18,6 @@ import (
 	"encoding/json"
 	"net/url"
 	"strings"
-	"fmt"
 )
 
 /*
@@ -44,7 +43,7 @@ type Source interface {
 	// IsValid returns whether source is setup correct
 	IsValid() bool
 
-	// Value sets value key
+	// Value sets value field name
 	Value(value string) Source
 
 	// GetValue returns value field name
@@ -73,10 +72,7 @@ type Source interface {
 newSource returns default source
 */
 func newSource(path ...string) (result Source) {
-	result = &source{
-		displayField: "display",
-		valueField:   "ID",
-	}
+	result = &source{}
 
 	if len(path) > 0 {
 		result.Path(path[0])
@@ -149,35 +145,16 @@ func (s *source) isDebug() bool {
 /*
 Result points to correct field
 */
-func (s *source) Result(field ...string) (result Source) {
-
-	result = s
-	if s.action == nil {
-		panic("Please set Source.Action first")
-	}
-
-	if !s.action.HasField(field...) {
-		loggerWarning(s.action.isDebug(), "Result field does not exist: %#v", field)
-		return
-	}
-
-	resultField := s.action.Field(field...)
-
-	// check if we have FIELD_ARRAY otherwise bye bye!
-	if resultField.GetType() != FIELD_ARRAY {
-		loggerError(s.action.isDebug(), "Result field must be FIELD_ARRAY: %#v", field)
-		return
-	}
-
+func (s *source) Result(field ...string) (self Source) {
+	self = s
 	s.resultFieldPath = field
-	return s
+	return
 }
 
 /*
 IsValid returns whether source is correclty set and can be shown
 */
 func (s *source) IsValid() bool {
-	fmt.Printf("is valid: %#v\n", s)
 	return s.GetPath() != ""
 }
 
@@ -217,30 +194,33 @@ GetData returns data (for json marshalling etc..)
 func (s *source) GetData() (result map[string]interface{}) {
 	result = map[string]interface{}{}
 
-	fmt.Printf("requesting source data: %#v\n", s)
-
-	// if not path provided we bail out.
-	if s.GetPath() == "" {
+	// if not valid we bail out.
+	if !s.IsValid() {
 		return
 	}
 
 	// add path
 	result["path"] = s.GetPath()
 
-	// result field available
-	if len(s.resultFieldPath) > 0 {
-		result["result"] = strings.Join(s.resultFieldPath, ".")
+	if s.action != nil {
+		result["metadata"] = s.action
 
-		if s.action != nil {
-			result["metadata"] = s.action
+		if len(s.resultFieldPath) > 0 {
+
+			if s.action.HasField(s.resultFieldPath...) {
+				resultField := s.action.Field(s.resultFieldPath...)
+				// check if we have FIELD_ARRAY otherwise bye bye!
+				if resultField.GetType() != FIELD_ARRAY {
+					loggerError(s.action.isDebug(), "Result field must be FIELD_ARRAY: %#v", s.resultFieldPath)
+					return
+				} else {
+					result["result"] = strings.Join(s.resultFieldPath, ".")
+				}
+			}
+			result["value"] = s.valueField
+			result["display"] = s.displayField
 		}
-		result["value"] = s.valueField
-		result["display"] = s.displayField
-
-
 	}
-
-	fmt.Printf("result %#v\n", result)
 
 	return
 }

@@ -197,7 +197,15 @@ func TestField(t *testing.T) {
 	})
 
 	Convey("Test Source", t, func() {
-		So(newField().Source("/suggest"), ShouldHaveSameTypeAs, newSource("/suggest"))
+
+		action := NewAction()
+		action.Field("result").Type(FIELD_ARRAY)
+
+		mid := newField()
+
+		src := mid.Source("/suggest").Action(action).Result("result")
+
+		So(src, ShouldHaveSameTypeAs, newField().Source("/suggest"))
 		So(newField().Source("/suggest").GetData(), ShouldNotBeNil)
 
 	})

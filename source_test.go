@@ -12,6 +12,9 @@ func TestSource(t *testing.T) {
 		So(newSource(), ShouldNotBeNil)
 		So(newSource().isDebug(), ShouldBeFalse)
 		So(newSource().Debug().isDebug(), ShouldBeTrue)
+
+		path := "/suggest"
+		So(newSource(path).GetPath(), ShouldEqual, path)
 	})
 
 	Convey("Test Action", t, func() {
@@ -25,9 +28,6 @@ func TestSource(t *testing.T) {
 	})
 
 	Convey("Test Result", t, func() {
-
-		// result without setting action first panics
-		So(func() { newSource().Result("field") }, ShouldPanic)
 
 		action := NewAction()
 		action.Field("hello")

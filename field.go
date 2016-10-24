@@ -337,7 +337,7 @@ func (f *field) GetData() (result map[string]interface{}) {
 	}
 
 	// add source if setup properly
-	if f.source.IsValid() && result["choices"] != nil {
+	if f.source.IsValid() {
 		result["source"] = f.source
 	}
 
