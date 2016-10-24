@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"net/url"
 	"strings"
+	"fmt"
 )
 
 /*
@@ -50,7 +51,10 @@ type Source interface {
 	GetValue() string
 
 	// Display sets display field name
-	//Display(display string) Action
+	Display(display string) Source
+
+	// GetDisplay returns display field name
+	GetDisplay() string
 
 	// Path sets path to source
 	Path(string) Source
@@ -69,7 +73,10 @@ type Source interface {
 newSource returns default source
 */
 func newSource(path ...string) (result Source) {
-	result = &source{}
+	result = &source{
+		displayField: "display",
+		valueField:   "ID",
+	}
 
 	if len(path) > 0 {
 		result.Path(path[0])
@@ -77,6 +84,7 @@ func newSource(path ...string) (result Source) {
 
 	// set default
 	result.Value(SOURCE_DEFAULT_VALUE_FIELD)
+	result.Display(SOURCE_DEFAULT_DISPLAY_FIELD)
 
 	return
 }
@@ -117,7 +125,7 @@ GetAction returns action, if not given, blank action is returned
 */
 func (s *source) GetAction() Action {
 	if s.action == nil {
-		s.Action(newAction())
+		s.Action(NewAction())
 	}
 
 	return s.action
@@ -169,6 +177,7 @@ func (s *source) Result(field ...string) (result Source) {
 IsValid returns whether source is correclty set and can be shown
 */
 func (s *source) IsValid() bool {
+	fmt.Printf("is valid: %#v\n", s)
 	return s.GetPath() != ""
 }
 
@@ -188,10 +197,27 @@ func (s *source) GetValue() string {
 }
 
 /*
+Display sets display fields name
+*/
+func (s *source) Display(display string) Source {
+	s.displayField = display
+	return s
+}
+
+/*
+GetDisplay returns display field name
+*/
+func (s *source) GetDisplay() string {
+	return s.displayField
+}
+
+/*
 GetData returns data (for json marshalling etc..)
 */
 func (s *source) GetData() (result map[string]interface{}) {
 	result = map[string]interface{}{}
+
+	fmt.Printf("requesting source data: %#v\n", s)
 
 	// if not path provided we bail out.
 	if s.GetPath() == "" {
@@ -208,7 +234,13 @@ func (s *source) GetData() (result map[string]interface{}) {
 		if s.action != nil {
 			result["metadata"] = s.action
 		}
+		result["value"] = s.valueField
+		result["display"] = s.displayField
+
+
 	}
+
+	fmt.Printf("result %#v\n", result)
 
 	return
 }

@@ -57,7 +57,7 @@ type Action interface {
 /*
 NewAction creates fresh new action
 */
-func newAction() Action {
+func NewAction() Action {
 	return &action{
 		query: newStructField(),
 	}
@@ -237,7 +237,7 @@ func (a *action) QueryParam(name string) Field {
 
 /*
 RemoveQueryParam removes query param by name
- */
+*/
 func (a *action) RemoveQueryParam(name string) Action {
 	a.query.RemoveField(name)
 	return a

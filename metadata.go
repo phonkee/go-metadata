@@ -86,7 +86,7 @@ func (m *metadata) Action(method string) Action {
 
 	// check if action exists
 	if _, ok := m.actions[method]; !ok {
-		na := newAction()
+		na := NewAction()
 
 		// if debug is enabled, action must too
 		if m.isDebug() {

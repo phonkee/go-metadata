@@ -9,14 +9,14 @@ import (
 func TestAction(t *testing.T) {
 
 	Convey("Test Default Action", t, func() {
-		a := newAction()
+		a := NewAction()
 
 		So(a.isDebug(), ShouldBeFalse)
 		So(a.Debug().isDebug(), ShouldBeTrue)
 	})
 
 	Convey("Test Description", t, func() {
-		a := newAction()
+		a := NewAction()
 
 		So(a.GetDescription(), ShouldEqual, "")
 		description := "fieldname"
@@ -25,7 +25,7 @@ func TestAction(t *testing.T) {
 	})
 
 	Convey("Test New Field", t, func() {
-		a := newAction()
+		a := NewAction()
 
 		name := "fieldname"
 
@@ -44,7 +44,7 @@ func TestAction(t *testing.T) {
 	})
 
 	Convey("Test Get Field Names", t, func() {
-		a := newAction()
+		a := NewAction()
 		name := "fieldname"
 
 		So(len(a.GetFieldNames()), ShouldEqual, 0)
@@ -54,7 +54,7 @@ func TestAction(t *testing.T) {
 	})
 
 	Convey("Test Action From", t, func() {
-		a := newAction()
+		a := NewAction()
 
 		So(func() {
 			a.From("")
@@ -81,7 +81,7 @@ func TestAction(t *testing.T) {
 	})
 
 	Convey("Test Has Field", t, func() {
-		a := newAction()
+		a := NewAction()
 
 		So(func() {
 			a.HasField()
@@ -94,7 +94,7 @@ func TestAction(t *testing.T) {
 	})
 
 	Convey("Test GetData", t, func() {
-		a := newAction()
+		a := NewAction()
 
 		So(a.GetData()["type"], ShouldBeNil)
 
@@ -109,20 +109,20 @@ func TestAction(t *testing.T) {
 	})
 
 	Convey("Test Parse Query Params", t, func() {
-		a := newAction()
+		a := NewAction()
 
 		a.ParseQueryParam("q=string&page=integer")
 		So(len(a.GetQueryParamNames()), ShouldEqual, 2)
 		So(a.GetData()["query"], ShouldNotBeNil)
 
-		a = newAction()
+		a = NewAction()
 		a.ParseQueryParam("%")
 		So(len(a.GetQueryParamNames()), ShouldEqual, 0)
 
 	})
 
 	Convey("Test Remove Query Param", t, func() {
-		a := newAction()
+		a := NewAction()
 
 		a.ParseQueryParam("q=string&page=integer")
 		So(len(a.GetQueryParamNames()), ShouldEqual, 2)
