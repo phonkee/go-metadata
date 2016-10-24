@@ -6,3 +6,8 @@ const (
 	ACTION_RETRIEVE = "GET"
 	ACTION_DELETE   = "DELETE"
 )
+
+const (
+	SOURCE_DEFAULT_VALUE_FIELD   = "value"
+	SOURCE_DEFAULT_DISPLAY_FIELD = "display"
+)

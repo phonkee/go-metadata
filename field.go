@@ -300,9 +300,18 @@ func (f *field) GetData() (result map[string]interface{}) {
 
 			// if typ is array or map merge fields to result
 		} else if f.typ == FIELD_ARRAY || f.typ == FIELD_MAP {
+
+			var (
+				data map[string]interface{}
+			)
 			for k, v := range f.fields {
-				result[k] = v
+				data = v.GetData()
+				result[k] = data
 			}
+
+			// remove required, we don't need it in array value
+			delete(result, "required")
+
 		}
 	}
 
