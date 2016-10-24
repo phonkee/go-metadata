@@ -48,6 +48,11 @@ func New(label ...string) (result Metadata) {
 		actions: map[string]Action{},
 	}
 
+	// global debug
+	if debugEnabled {
+		result.Debug()
+	}
+
 	if len(label) > 0 {
 		result.Name(label[0])
 	}

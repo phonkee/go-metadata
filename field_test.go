@@ -28,12 +28,26 @@ func TestField(t *testing.T) {
 		So(f.GetDescription(), ShouldEqual, descrption)
 	})
 
+	Convey("Test add Field", t, func() {
+		f := newField()
+		f.Debug()
+		added := f.addField("hello", newField())
+		So(added.isDebug(), ShouldBeTrue)
+
+		// test debug
+		So(newField().Debug().From(1).isDebug(), ShouldBeTrue)
+	})
+
 	Convey("Test Add Field", t, func() {
 		f := newField()
+
+		So(f.NumFields(), ShouldEqual, 0)
+
 		name := "testfield"
 		sub := f.Field(name)
 		sub2 := f.Field(name)
 		So(sub, ShouldEqual, sub2)
+		So(f.NumFields(), ShouldEqual, 1)
 
 		other := "other"
 		otherfield := newField()
@@ -46,6 +60,7 @@ func TestField(t *testing.T) {
 		resultuser := f.Field("result", "user")
 
 		So(f.Field("result").Field("user"), ShouldEqual, resultuser)
+
 	})
 
 	Convey("Test Has Field", t, func() {

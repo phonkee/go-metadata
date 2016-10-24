@@ -9,16 +9,16 @@ import (
 )
 
 const (
-	FIELD_INVALID          = "invalid"
-	FIELD_ARRAY            = "array"
-	FIELD_STRUCT           = "struct"
-	FIELD_MAP              = "map"
-	FIELD_INTEGER          = "integer"
+	FIELD_INVALID = "invalid"
+	FIELD_ARRAY = "array"
+	FIELD_STRUCT = "struct"
+	FIELD_MAP = "map"
+	FIELD_INTEGER = "integer"
 	FIELD_UNSIGNED_INGETER = "unsigned"
-	FIELD_STRING           = "string"
-	FIELD_BOOLEAN          = "boolean"
-	FIELD_FLOAT            = "float"
-	FIELD_DATETIME         = "datetime"
+	FIELD_STRING = "string"
+	FIELD_BOOLEAN = "boolean"
+	FIELD_FLOAT = "float"
+	FIELD_DATETIME = "datetime"
 )
 
 // field type func returns Field by reflect value
@@ -29,6 +29,10 @@ var (
 
 	// mapping of custom types
 	types = map[reflect.Type]FieldTypeFunc{}
+
+	AVAILABLE_FIELDS = []string{FIELD_INVALID, FIELD_ARRAY, FIELD_STRUCT, FIELD_MAP, FIELD_INTEGER,
+		FIELD_UNSIGNED_INGETER,
+		FIELD_STRING, FIELD_BOOLEAN, FIELD_FLOAT, FIELD_DATETIME}
 )
 
 func init() {

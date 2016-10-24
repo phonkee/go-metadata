@@ -16,6 +16,12 @@ func TestMetadata(t *testing.T) {
 		So(md.isDebug(), ShouldBeFalse)
 		So(md.Debug().isDebug(), ShouldBeTrue)
 
+		So(debugEnabled, ShouldBeFalse)
+		Debug()
+		So(debugEnabled, ShouldBeTrue)
+		So(New().isDebug(), ShouldBeTrue)
+
+		debugEnabled = false
 	})
 
 	Convey("Test Add Action", t, func() {

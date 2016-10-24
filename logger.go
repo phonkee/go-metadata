@@ -4,7 +4,7 @@ import "github.com/phonkee/go-logger"
 
 var (
 	// global debug option
-	debug = false
+	debugEnabled = false
 )
 
 var (
@@ -14,3 +14,10 @@ var (
 	loggerWarning = logger.Warning("metadata")
 )
 
+
+/*
+Debug enables global debug for go-metadata
+ */
+func Debug() {
+	debugEnabled = true
+}

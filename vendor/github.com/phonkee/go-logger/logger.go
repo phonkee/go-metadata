@@ -40,7 +40,7 @@ func named(name string, color string) Logger {
 Debug returns debug logger with given name
 */
 func Debug(name string) Logger {
-	return named(name + ".debug", "yellow")
+	return named(name + ".debug", "green")
 }
 
 /*

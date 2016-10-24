@@ -45,3 +45,15 @@ func (o tagOptions) Contains(optionName string) bool {
 	}
 	return false
 }
+
+/*
+stringListContains returns whether string is in stringlist
+ */
+func stringListContains(where []string, what string) bool {
+	for _, value := range(where) {
+		if value == what {
+			return true
+		}
+	}
+	return false
+}

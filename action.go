@@ -40,13 +40,24 @@ type Action interface {
 
 	// isDebug returns whether debugging is enabled
 	isDebug() bool
+
+	// ParseQueryParam parses
+	ParseQueryParam(query string) Action
+
+	// QueryParam returns or adds new query param
+	QueryParam(name string) Field
+
+	// GetQueryParamNames returns names of all available query params
+	GetQueryParamNames() []string
 }
 
 /*
 NewAction creates fresh new action
 */
 func newAction() Action {
-	return &action{}
+	return &action{
+		query: newStructField(),
+	}
 }
 
 /*
@@ -63,8 +74,8 @@ type action struct {
 	// debug
 	debug bool
 
-	// url data as Field
-	url Field
+	// query params as Field
+	query Field
 }
 
 /*
@@ -164,6 +175,17 @@ func (a *action) GetData() (result map[string]interface{}) {
 		result["description"] = a.description
 	}
 
+	// check if we have query params
+	if a.query.NumFields() > 0 {
+		qpmap := map[string]Field{}
+
+		for _, qpName := range a.query.GetFieldNames() {
+			qpmap[qpName] = a.query.Field(qpName)
+		}
+
+		result["query"] = qpmap
+	}
+
 	return
 }
 
@@ -188,4 +210,31 @@ isDebug returns whether debugging is enabled
 */
 func (a *action) isDebug() bool {
 	return a.debug
+}
+
+/*
+ParseQueryParam parses url query and sets QueryParams
+*/
+func (a *action) ParseQueryParam(query string) Action {
+	var (
+		err error
+	)
+	if err = ParseQuery(query, a); err != nil {
+		loggerError(a.isDebug(), "parse query error: %v", query)
+	}
+	return a
+}
+
+/*
+QueryParam returns or adds new query param
+*/
+func (a *action) QueryParam(name string) Field {
+	return a.query.Field(name)
+}
+
+/*
+GetQueryParamNames returns names of all available query params
+*/
+func (a *action) GetQueryParamNames() []string {
+	return a.query.GetFieldNames()
 }

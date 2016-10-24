@@ -43,6 +43,9 @@ func TestUtils(t *testing.T) {
 
 	})
 
-
+	Convey("Test String List Contains", t, func() {
+		So(stringListContains([]string{"yes", "no"}, "no"), ShouldBeTrue)
+		So(stringListContains([]string{"yes", "no"}, "never"), ShouldBeFalse)
+	})
 
 }

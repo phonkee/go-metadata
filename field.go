@@ -19,6 +19,9 @@ type Field interface {
 	// returns whether Field has field with given name
 	HasField(...string) bool
 
+	// return whether we have fields
+	NumFields() int
+
 	// GetFieldNames returns list of fields
 	GetFieldNames() []string
 
@@ -160,6 +163,13 @@ func (f *field) HasField(names ...string) bool {
 		}
 	}
 	return ok
+}
+
+/*
+NumFields returns num fields
+*/
+func (f *field) NumFields() int {
+	return len(f.fields)
 }
 
 /*
