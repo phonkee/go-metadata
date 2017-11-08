@@ -1,0 +1,8 @@
+package: github.com/phonkee/go-metadata
+import:
+- package: github.com/phonkee/go-logger
+testImport:
+- package: github.com/smartystreets/goconvey
+  version: 1.6.3
+  subpackages:
+  - convey
